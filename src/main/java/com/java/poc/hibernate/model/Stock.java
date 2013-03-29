@@ -1,6 +1,7 @@
 package com.java.poc.hibernate.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,17 +10,24 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.persistence.Version;
+
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.OptimisticLockType;
 
 @Entity
-@Table(name = "stock", catalog="rupesh", uniqueConstraints = {
+@Table(name = "stock", uniqueConstraints = {
 		@UniqueConstraint(columnNames = "STOCK_NAME"),
 		@UniqueConstraint(columnNames = "STOCK_CODE")})
-
+@org.hibernate.annotations.Entity(dynamicUpdate=true, optimisticLock = OptimisticLockType.ALL)
 public class Stock implements Serializable {
 
 	private Integer stockId;
 	private String stockCode;
 	private String stockName;
+
+	private int version;
 
 	public Stock() {
 	}
@@ -56,6 +64,17 @@ public class Stock implements Serializable {
 
 	public void setStockName(String stockName) {
 		this.stockName = stockName;
+	}
+
+	@Version
+    @Column(name="version")
+	public int getVersion() {
+		return version;
+	}
+
+	@Generated(GenerationTime.ALWAYS)
+	public void setVersion(int version) {
+		this.version = version;
 	}
 
 }
